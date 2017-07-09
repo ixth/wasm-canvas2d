@@ -14,6 +14,9 @@
 	;; import Math.sin as a function float64 => float64
 	(func $sin (import "Math" "sin") (param $angle f64) (result f64))
 
+	;; import Math.PI as a float64
+	(global $pi (import "Math" "PI") f64)
+
 	;; declare anonymous function and export right away as "draw"
 	(func (export "draw") (param $timestamp f64)
 		;; let phase: float64 = 0
@@ -58,7 +61,8 @@
 
 			(get_local $phase) ;; Restore $phase
 			(f64.mul (f64.const 1.75)) ;; Multiply by 3/4 to get a nice Lissajous curve
-			(f64.const 1.5707963267948966) ;; Pi/2. Wasm is a binary format, so there's no penalty for being too precise
+			(get_global $pi)
+			(f64.div (f64.const 2))
 			(f64.add)
 			(call $sin) ;; Math.sin(). But since we've added Pi/2, it's actually a cos. Or -cos. Who cares if it looks good?
 			(f64.mul (f64.const 74)) ;; This would be an Y coord. Scale by 74
